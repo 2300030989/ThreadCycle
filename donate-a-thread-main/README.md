@@ -1,22 +1,16 @@
-# Welcome to your Lovable project
+# DonateThread - Sustainable Clothing Donation Platform
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+A modern web application for scheduling clothing donation pickups and contributing to a sustainable future.
 
-## How can I edit this code?
+## How to edit this code
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+You can edit this application using your preferred IDE.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repo and push changes to your repository.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -60,14 +54,27 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## How to deploy this project
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Frontend
+Build the frontend: `npm run build`
+Deploy the `dist/` folder to:
+- Vercel
+- Netlify
+- GitHub Pages
+- Any static hosting service
 
-## Can I connect a custom domain to my Lovable project?
+### Backend
+Deploy the `server/` folder to:
+- Heroku
+- Railway
+- Render
+- Any Node.js hosting service
 
-Yes, you can!
+## Environment Variables
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Make sure to configure environment variables in production:
+- `JWT_SECRET` - Secret key for JWT tokens
+- `EMAIL_USER` - Gmail address for sending emails
+- `EMAIL_PASS` - Gmail App Password
+- `PORT` - Server port (default: 5000)
