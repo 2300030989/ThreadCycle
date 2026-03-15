@@ -40,10 +40,9 @@ jobs:
     - name: Install Backend Dependencies
       working-directory: ./donate-a-thread-main/server
       run: npm install
-    - name: Test Backend (Placeholder)
+    - name: Test Backend (Health Check)
       working-directory: ./donate-a-thread-main/server
-      run: node index.js --check # Simple check if server starts
-      continue-on-error: true
+      run: node index.js --check
 
   deploy:
     needs: [frontend, backend]

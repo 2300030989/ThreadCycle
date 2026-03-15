@@ -25,8 +25,16 @@ function startServer() {
     pickups: cache.pickups.length
   });
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    
+    // Check if the --check flag is passed (for CI/CD health check)
+    if (process.argv.includes('--check')) {
+      console.log('Health check successful. Exiting...');
+      server.close(() => {
+        process.exit(0);
+      });
+    }
   });
 }
 
