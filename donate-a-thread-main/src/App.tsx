@@ -68,7 +68,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <BrowserRouter basename="/ThreadCycle">
           <AppRoutes />
         </BrowserRouter>
       </TooltipProvider>
