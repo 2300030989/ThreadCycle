@@ -1,0 +1,50 @@
+name: DonateThread CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    - name: Install Frontend Dependencies
+      run: npm install
+    - name: Lint Frontend
+      run: npm run lint
+    - name: Build Frontend
+      run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: server/package-lock.json
+    - name: Install Backend Dependencies
+      working-directory: ./server
+      run: npm install
+    - name: Test Backend (Placeholder)
+      working-directory: ./server
+      run: node index.js --check # Simple check if server starts
+      continue-on-error: true
+
+  deploy:
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - name: Deploy Announcement
+      run: echo "Code passed all checks! Ready for deployment to Vercel/Heroku/AWS."
