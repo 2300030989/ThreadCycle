@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cache = require('./config/db');
+const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const pickupRoutes = require('./routes/pickupRoutes');
 require('dotenv').config();
@@ -11,9 +12,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/pickups', pickupRoutes);
+
+// SERVE FRONTEND: Combine both links into one
+// This tells the server to serve the built website files
+const frontendPath = path.join(__dirname, '../donate-a-thread-main/dist');
+app.use(express.static(frontendPath));
+
+// Handle any page requests by sending the index.html
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  }
+});
 
 // Start Server with In-Memory Cache
 const PORT = process.env.PORT || 5000;
