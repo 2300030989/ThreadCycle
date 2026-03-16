@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { API_BASE_URL } from '@/apiConfig';
+import { mockApi } from '@/mockApi';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -20,14 +19,16 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      // Use Mock API instead of axios for GitHub Pages
+      const response = await mockApi.login({
         email,
         password,
       });
+      
       login(response.data.token, response.data.user);
       toast({
-        title: 'Login Successful',
-        description: 'Welcome back!',
+        title: 'Login Successful (Mock Mode)',
+        description: 'Welcome back to your local account!',
       });
       
       const from = location.state?.from || '/dashboard';
@@ -36,7 +37,7 @@ const Login = () => {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: 'Something went wrong',
+        description: 'Invalid credentials or user not found in local storage',
       });
     }
   };

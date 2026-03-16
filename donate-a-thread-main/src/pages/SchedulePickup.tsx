@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { MapPin } from 'lucide-react';
-import { API_BASE_URL } from '@/apiConfig';
+import { mockApi } from '@/mockApi';
 
 import DashboardLayout from '@/components/DashboardLayout';
 
@@ -72,11 +71,8 @@ const SchedulePickup = () => {
          return;
       }
 
-      const response = await axios.post(
-        `${API_BASE_URL}/api/pickups`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // Use Mock API instead of axios for GitHub Pages
+      const response = await mockApi.createPickup(formData);
       
       // Clear saved data on success
       localStorage.removeItem('pendingPickupData');
@@ -86,7 +82,7 @@ const SchedulePickup = () => {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to schedule pickup',
+        description: 'Failed to schedule pickup in mock mode',
       });
     }
   };
@@ -149,13 +145,13 @@ const SchedulePickup = () => {
                 <Label>Cloth Type</Label>
                 <Select onValueChange={(val) => setFormData({ ...formData, cloth_type: val })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Type" />
+                    <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Shirts">Shirts</SelectItem>
-                    <SelectItem value="Pants">Pants</SelectItem>
-                    <SelectItem value="Sarees">Sarees</SelectItem>
-                    <SelectItem value="Mixed">Mixed</SelectItem>
+                    <SelectItem value="Mixed Clothes">Mixed Clothes</SelectItem>
+                    <SelectItem value="Shirts/Pants">Shirts/Pants</SelectItem>
+                    <SelectItem value="Sarees/Ethnic">Sarees/Ethnic</SelectItem>
+                    <SelectItem value="Winter Wear">Winter Wear</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -163,22 +159,23 @@ const SchedulePickup = () => {
                 <Label>Condition</Label>
                 <Select onValueChange={(val) => setFormData({ ...formData, condition: val })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Condition" />
+                    <SelectValue placeholder="Select condition" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="New">New</SelectItem>
-                    <SelectItem value="Gently Used">Gently Used</SelectItem>
-                    <SelectItem value="Old">Old</SelectItem>
+                    <SelectItem value="Good">Good (Re-wearable)</SelectItem>
+                    <SelectItem value="Worn out">Worn out (Recyclable)</SelectItem>
+                    <SelectItem value="Mixed">Mixed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="quantity">Quantity</Label>
+              <Label htmlFor="quantity">Quantity (Approx. kg)</Label>
               <Input
                 id="quantity"
-                placeholder="e.g. 2 bags, 10 items"
+                type="number"
+                placeholder="e.g. 5"
                 value={formData.quantity}
                 onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                 required
@@ -189,16 +186,18 @@ const SchedulePickup = () => {
               <Label htmlFor="notes">Notes (Optional)</Label>
               <Textarea
                 id="notes"
-                placeholder="Gate code, specific instructions..."
+                placeholder="Any special instructions for pickup"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               />
             </div>
 
-            <Button type="submit" className="w-full">Confirm Pickup</Button>
-          </form>
-        </CardContent>
-      </Card>
+            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
+              Confirm Pickup
+            </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );

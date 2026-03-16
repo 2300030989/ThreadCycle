@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { API_BASE_URL } from '@/apiConfig';
+import { mockApi } from '@/mockApi';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -22,16 +21,18 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/auth/signup`, {
+      // Use Mock API instead of axios for GitHub Pages
+      const response = await mockApi.signup({
         name,
         email,
         phone,
         password,
       });
+      
       login(response.data.token, response.data.user);
       toast({
-        title: 'Signup Successful',
-        description: 'Account created successfully!',
+        title: 'Signup Successful (Mock Mode)',
+        description: 'Account created locally! Welcome to DonateThread.',
       });
       
       const from = location.state?.from || '/dashboard';
@@ -40,7 +41,7 @@ const Signup = () => {
       toast({
         variant: 'destructive',
         title: 'Signup Failed',
-        description: 'Something went wrong',
+        description: 'Something went wrong with the mock signup',
       });
     }
   };

@@ -1,9 +1,8 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { mockApi } from '@/mockApi';
 
 const History = () => {
   const { token, user } = useAuth();
@@ -11,9 +10,8 @@ const History = () => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['pickups'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:5000/api/pickups', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // Use Mock API instead of axios for GitHub Pages
+      const res = await mockApi.getPickups();
       return res.data;
     },
     enabled: !!token,
@@ -35,8 +33,8 @@ const History = () => {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Donation History</h1>
-        <p className="text-gray-500">View and track your past contributions.</p>
+        <h1 className="text-3xl font-bold text-gray-800">Donation History (Mock Mode)</h1>
+        <p className="text-gray-500">View and track your past contributions locally.</p>
       </div>
 
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -46,8 +44,8 @@ const History = () => {
           </CardHeader>
           <CardContent>
             <div className="text-sm text-gray-700">
-              <p className="font-semibold">{user?.name}</p>
-              <p className="text-gray-500">{user?.email}</p>
+              <p className="font-semibold">{user?.name || 'Guest'}</p>
+              <p className="text-gray-500">{user?.email || 'guest@example.com'}</p>
             </div>
           </CardContent>
         </Card>
@@ -94,19 +92,29 @@ const History = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((p: PickupRow) => (
-                    <tr key={p.id} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-gray-900">#{p.id}</td>
-                      <td className="px-4 py-3">{p.pickup_date}</td>
-                      <td className="px-4 py-3">{p.pickup_time}</td>
-                      <td className="px-4 py-3">{`${p.quantity} (${p.cloth_type})`}</td>
-                      <td className="px-4 py-3">{p.condition}</td>
-                      <td className="px-4 py-3">
-                        <StatusBadge status={p.status} />
+                  {rows.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-4 py-6 text-center text-gray-500">
+                        No donations found in local storage.
                       </td>
-                      <td className="px-4 py-3">{p.address}</td>
                     </tr>
-                  ))}
+                  ) : (
+                    rows.map((p: PickupRow) => (
+                      <tr key={p.id} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3 font-medium text-gray-900">#{p.id}</td>
+                        <td className="px-4 py-3">{p.pickup_date}</td>
+                        <td className="px-4 py-3">{p.pickup_time}</td>
+                        <td className="px-4 py-3">{p.quantity}kg ({p.cloth_type})</td>
+                        <td className="px-4 py-3">{p.condition}</td>
+                        <td className="px-4 py-3">
+                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                            {p.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-xs max-w-[150px] truncate">{p.address}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -114,22 +122,6 @@ const History = () => {
         </CardContent>
       </Card>
     </DashboardLayout>
-  );
-};
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const styles: { [key: string]: string } = {
-    Completed: 'bg-green-100 text-green-800 hover:bg-green-200',
-    Scheduled: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
-    Cancelled: 'bg-red-100 text-red-800 hover:bg-red-200',
-    Delivered: 'bg-green-100 text-green-800 hover:bg-green-200',
-    Picked: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
-  };
-
-  return (
-    <Badge className={`${styles[status] || 'bg-gray-100 text-gray-800'} border-none shadow-none`}>
-      {status}
-    </Badge>
   );
 };
 
