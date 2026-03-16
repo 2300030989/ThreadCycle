@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { MapPin } from 'lucide-react';
+import { API_BASE_URL } from '@/apiConfig';
 
 import DashboardLayout from '@/components/DashboardLayout';
 
@@ -72,7 +73,7 @@ const SchedulePickup = () => {
       }
 
       const response = await axios.post(
-        'http://localhost:5000/api/pickups',
+        `${API_BASE_URL}/api/pickups`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
